@@ -6,6 +6,12 @@ resource "aws_vpc" "this" {
   tags = merge({
     Name = "${local.tag_prefix}-vpc"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_subnet" "public_subnet" {
@@ -20,6 +26,12 @@ resource "aws_subnet" "public_subnet" {
   tags = merge({
     Name = "${local.tag_prefix}-pub-sub-${count.index + 1}"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_subnet" "private_subnet" {
@@ -34,6 +46,12 @@ resource "aws_subnet" "private_subnet" {
   tags = merge({
     Name = "${local.tag_prefix}-priv-sub-${count.index + 1}"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_subnet" "db_subnet" {
@@ -48,6 +66,12 @@ resource "aws_subnet" "db_subnet" {
   tags = merge({
     Name = "${local.tag_prefix}-db-sub-${count.index + 1}"
   })
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_internet_gateway" "this" {
@@ -55,6 +79,12 @@ resource "aws_internet_gateway" "this" {
     Name = "${local.tag_prefix}-igw"
   }, var.additional_tags)
   vpc_id = aws_vpc.this.id
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_eip" "this" {
@@ -65,6 +95,12 @@ resource "aws_eip" "this" {
   tags = merge({
     Name = "${local.tag_prefix}-ngw-eip-${count.index + 1}"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_nat_gateway" "this" {
@@ -77,6 +113,12 @@ resource "aws_nat_gateway" "this" {
   tags = merge({
     Name = "${local.tag_prefix}-natgw-${count.index + 1}"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_route_table" "public" {
@@ -84,6 +126,12 @@ resource "aws_route_table" "public" {
   tags = merge({
     Name = "${local.tag_prefix}-pub-rt"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_route" "igw" {
@@ -107,6 +155,12 @@ resource "aws_route_table" "private" {
   tags = merge({
     Name = "${local.tag_prefix}-priv-rt"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_route" "natgw_route" {
@@ -141,6 +195,12 @@ resource "aws_route_table" "db" {
   tags = merge({
     Name = "${local.tag_prefix}-db-rt"
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_route_table_association" "db" {
@@ -157,6 +217,12 @@ resource "aws_s3_bucket" "flow_log" {
   tags = merge({
     Name = local.vpc_flow_logs_bucket
   }, var.additional_tags)
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "flow_log" {
