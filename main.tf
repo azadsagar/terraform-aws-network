@@ -167,7 +167,8 @@ resource "aws_route" "natgw_route" {
   count          = var.use_nat_gateway && var.enable_multiaz_nat_gateway ? local.azs_count : 1
   route_table_id = element(aws_route_table.private.*.id, count.index)
 
-  gateway_id             = element(aws_nat_gateway.this.*.id, count.index)
+  #gateway_id             = element(aws_nat_gateway.this.*.id, count.index)
+  nat_gateway_id         = element(aws_nat_gateway.this.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
 }
 
@@ -228,6 +229,8 @@ resource "aws_s3_bucket" "flow_log" {
 resource "aws_s3_bucket_server_side_encryption_configuration" "flow_log" {
   count  = var.enable_vpc_flow_logs ? 1 : 0
   bucket = element(aws_s3_bucket.flow_log.*.id, count.index)
+
+  depends_on = [aws_s3_bucket.flow_log]
 
   rule {
     apply_server_side_encryption_by_default {
